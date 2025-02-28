@@ -1,15 +1,19 @@
 package com.example.project;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
 public class Player{
     private ArrayList<Card> hand;
     private ArrayList<Card> allCards; //the current community cards + hand
+    private int[] rankFreq ;
+    private int[] rankSuit;
     String[] suits  = Utility.getSuits();
     String[] ranks = Utility.getRanks();
     
     public Player(){
         hand = new ArrayList<>();
+
     }
 
     public ArrayList<Card> getHand(){return hand;}
@@ -25,11 +29,16 @@ public class Player{
 
     public void sortAllCards(){} 
 
-    public ArrayList<Integer> findRankingFrequency(){
+    public int[] findRankingFrequency(){
+        for(int i=0;i<allCards.size();i++){
+            int rank= allCards.get(i).getRank();
+            rankFreq[rank]++;
+        }
         return new ArrayList<>(); 
     }
 
     public ArrayList<Integer> findSuitFrequency(){
+
         return new ArrayList<>(); 
     }
 
