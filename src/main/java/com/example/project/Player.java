@@ -1,5 +1,6 @@
 package com.example.project;
 import java.lang.reflect.Array;
+
 import java.util.ArrayList;
 
 
@@ -20,6 +21,7 @@ public class Player{
     public ArrayList<Card> getAllCards(){return allCards;}
 
     public void addCard(Card c){
+        //just add the card to the hadn array
         hand.add(c);
         
     }
@@ -35,10 +37,11 @@ public class Player{
         rankFreq = findRankingFrequency();
         rankSuit = findSuitFrequency();
 
-        //get high card
+        //get high card value
         int highCard = 0;
         int i = rankFreq.length-1;
       while(i >=0){
+        //high card is first card in freq list
             if(rankFreq[i] !=0){
                 highCard = i;
                 break;
@@ -52,38 +55,40 @@ public class Player{
         boolean quads = false;
         for(int num:rankFreq){
             if (num == 2){
+                //if any have 2, is a pair, isnt boolean since can be more than one pair
                 pairs++;
             }
             if(num == 3){
+                //if any have 3 its a trip, also only 1 trip possible per player
                 trips = true;
             }
             if(num == 4){
+                //if any 4 its a quad, only one quad possible
                 quads = true;
             }
-        }
-        //see if flush
+        } 
+        //see if flush by checking if 5 freq of a suit
         boolean flush = false;
         for(int num:rankSuit){
             if(num == 5){
                 flush = true;
             }
         }
-        //see if straight
 
         //srot
         sortAllCards();
-
+        //check for straight
         boolean straight = true;
         for(int j = 0;j<allCards.size()-1;j++){
-
+            //gest rank of this and next one
             int rankJ = Utility.getRankValue(allCards.get(j).getRank());
             int rankJ1 = Utility.getRankValue(allCards.get(j +1).getRank());
-         
+            //checks for straight by seeing if in order, if not becomes false
             if( rankJ != rankJ1 - 1){
                 straight = false;
             }
         }
-        //check for royal straight
+        //check for royal straight by checking if its royal, i.e if fist and last are 10 and ace since already sorted
         boolean royalStraight = false;
         if(straight){
             //if first is 10, and last is ace, then stragiht since already sorted
@@ -92,18 +97,18 @@ public class Player{
             }
         }
 
-        /*  case "Royal Flush": return 11;
-        case "Straight Flush": return 10;
-        case "Four of a Kind": return 9;
-        case "Full House": return 8;
-        case "Flush": return 7;
-        case "Straight": return 6;
-        case "Three of a Kind": return 5;
-        case "Two Pair": return 4;
-        case "A Pair": return 3;
-        case "High Card": return 2;
-        case "Nothing": return 1;
-        */
+        //check for high card by seeing if highest card is players
+        int rankHand1 = Utility.getRankValue(hand.get(0).getRank());
+        int rankHand2 = Utility.getRankValue(hand.get(1).getRank());
+        boolean high = false;
+        for(int j = rankFreq.length-1; j>=0;j--){
+            if((rankFreq[j] != 0) &&((  j +2== rankHand1) || (j+2 == rankHand2))){
+                high = true;
+                break;
+            }else{
+                break;
+            }
+        }
         //actual checking
         if(royalStraight && flush){
             return "Royal Flush";
@@ -132,7 +137,7 @@ public class Player{
         else if( pairs==1){
             return "A Pair";
         }
-        else if( allCards.size() != 0) {
+        else if( high) {
             return "High Card";
         }else{
             return "Nothing";
@@ -167,8 +172,10 @@ public class Player{
     } 
 
     public int[] findRankingFrequency(){
+        //create int array since easeir for freq list
         int[] rankFreq = new int[13];
         for(int i=0;i<allCards.size();i++){
+            //if it matches index minus 2 add it as an apperance of that index
             int rank= Utility.getRankValue(allCards.get(i).getRank()) - 2;
             rankFreq[rank]++;
         }
@@ -176,11 +183,12 @@ public class Player{
     }
 
     public int[] findSuitFrequency(){
+        //create int array since easeir for freq list
         int[] rankSuit = new int[4];
 
         for(int i=0;i<allCards.size();i++){
             String suit = allCards.get(i).getSuit();
-           
+        //checks what suit, adds based on order in utiliy list
             if(suit.equals("♠")){
                 rankSuit[0]++;
             }
